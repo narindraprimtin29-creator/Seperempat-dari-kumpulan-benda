@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Seperempat - Matematika Kelas 2 SD</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #fce7f3 100%);
+            min-height: 100vh;
+            color: #1e293b;
+            user-select: none;
+        }
+
+        .font-fun {
+            font-family: 'Fredoka', cursive;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 4px solid #ffffff;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-bounce {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .btn-bounce:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+        .btn-bounce:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .item-grid-box {
+            background-color: #f8fafc;
+            border: 3px dashed #cbd5e1;
+            border-radius: 1rem;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        .item-grid-box:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        /* Certificate Print Styling */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificate-print-area, #certificate-print-area * {
+                visibility: visible;
+            }
+            #certificate-print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                box-shadow: none;
+                border: 10px double #3b82f6 !important;
+                background: #ffffff !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+        .animate-float {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-3 sm:p-6">
+
+    <!-- Top Audio Bar -->
+    <header class="w-full max-w-4xl mx-auto flex justify-between items-center mb-4 px-2">
+        <div class="flex items-center gap-2 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-white">
+            <span class="text-2xl animate-bounce">🧩</span>
+            <span class="font-fun font-bold text-slate-700 text-lg sm:text-xl">PETUALANGAN SEPEREMPAT</span>
+        </div>
+        <button id="sound-toggle-btn" onclick="toggleSound()" class="flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold px-4 py-2 rounded-full shadow-md transition-all active:scale-95 text-sm sm:text-base">
+            <span id="sound-icon">🔊</span>
+            <span id="sound-text" class="hidden sm:inline">Suara ON</span>
+        </button>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-3xl mx-auto my-auto flex-grow flex items-center justify-center">
+
+        <!-- SCREEN 1: WELCOME SCREEN -->
+        <section id="screen-welcome" class="w-full glass-card rounded-3xl p-6 sm:p-10 text-center animate-pop">
+            <div class="text-6xl sm:text-8xl mb-4 animate-float inline-block">🍕🍎🎈</div>
+            <h1 class="font-fun text-3xl sm:text-5xl font-extrabold text-blue-600 mb-2 leading-tight">
+                PETUALANGAN SEPEREMPAT
+            </h1>
+            <p class="font-fun text-lg sm:text-2xl text-amber-600 font-bold mb-6">
+                "Yuk, Temukan Seperempat dari Kumpulan Benda!"
+            </p>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 sm:p-6 mb-8 text-left text-slate-700 text-base sm:text-lg">
+                <p class="font-bold text-blue-800 mb-2">👋 Halo Teman-Teman Kelas 2 SD!</p>
+                <p>Mari belajar pecahan <span class="font-bold text-blue-600">Seperempat (1/4)</span> sambil bermain game yang seru dan menyenangkan!</p>
+            </div>
+            <button onclick="switchScreen('screen-player')" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-fun font-bold text-xl sm:text-2xl py-4 px-10 rounded-2xl shadow-lg border-b-4 border-emerald-700 w-full sm:w-auto">
+                🚀 MASUK PERMAINAN
+            </button>
+        </section>
+
+        <!-- SCREEN 2: PLAYER IDENTITY SCREEN -->
+        <section id="screen-player" class="w-full glass-card rounded-3xl p-6 sm:p-10 text-center hidden animate-pop">
+            <div class="text-5xl mb-3">✏️</div>
+            <h2 class="font-fun text-2xl sm:text-4xl font-bold text-slate-800 mb-2">Siapa Namamu?</h2>
+            <p class="text-slate-600 mb-6 text-sm sm:text-base">Isi nama dan sekolahmu dulu ya sebelum mulai berpetualang!</p>
+
+            <form onsubmit="handleStartGame(event)" class="space-y-5 text-left max-w-md mx-auto">
+                <div>
+                    <label class="block font-fun text-slate-700 font-bold mb-2 text-lg">Nama Lengkap Siswa:</label>
+                    <input type="text" id="player-name" required placeholder="Contoh: Rani Permata" 
+                           class="w-full text-lg p-4 rounded-2xl border-3 border-blue-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none transition shadow-inner">
+                </div>
+                <div>
+                    <label class="block font-fun text-slate-700 font-bold mb-2 text-lg">Nama Sekolah:</label>
+                    <input type="text" id="player-school" required placeholder="Contoh: SD Negeri 1 Merdeka" 
+                           class="w-full text-lg p-4 rounded-2xl border-3 border-blue-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none transition shadow-inner">
+                </div>
+                <div class="pt-4 text-center">
+                    <button type="submit" class="btn-bounce bg-blue-500 hover:bg-blue-600 text-white font-fun font-bold text-xl py-4 px-8 rounded-2xl shadow-lg border-b-4 border-blue-700 w-full">
+                        🚀 MULAI BERMAIN
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- SCREEN 3: INSTRUCTIONS SCREEN -->
+        <section id="screen-instructions" class="w-full glass-card rounded-3xl p-6 sm:p-10 hidden animate-pop">
+            <div class="text-center mb-6">
+                <span class="text-5xl">📜</span>
+                <h2 class="font-fun text-2xl sm:text-4xl font-bold text-slate-800 mt-2">Petunjuk Permainan</h2>
+            </div>
+
+            <div class="space-y-4 text-slate-700 text-base sm:text-lg mb-8">
+                <div class="flex items-start gap-3 bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                    <span class="text-2xl">1️⃣</span>
+                    <p>Ada <span class="font-bold text-amber-700">25 soal pilihan ganda</span> yang seru untuk dijawab.</p>
+                </div>
+                <div class="flex items-start gap-3 bg-blue-50 p-4 rounded-2xl border border-blue-200">
+                    <span class="text-2xl">2️⃣</span>
+                    <p><span class="font-bold text-blue-700">Seperempat (1/4)</span> artinya 1 dari 4 bagian yang sama besar/banyak.</p>
+                </div>
+                <div class="flex items-start gap-3 bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                    <span class="text-2xl">3️⃣</span>
+                    <p>Pilihlah satu jawaban yang menurutmu paling tepat!</p>
+                </div>
+                <div class="flex items-start gap-3 bg-purple-50 p-4 rounded-2xl border border-purple-200">
+                    <span class="text-2xl">4️⃣</span>
+                    <p>Setiap jawaban benar mendapat <span class="font-bold text-purple-700">4 poin</span> (Skor Maksimal = 100).</p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button onclick="startQuiz()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white font-fun font-bold text-xl py-4 px-10 rounded-2xl shadow-lg border-b-4 border-emerald-700">
+                    🎮 SAYA SIAP! MULAI SOAL 1
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: QUIZ SCREEN -->
+        <section id="screen-quiz" class="w-full glass-card rounded-3xl p-4 sm:p-8 hidden">
+            <!-- Top Status Bar -->
+            <div class="flex flex-wrap justify-between items-center gap-2 mb-4 bg-slate-100 p-3 rounded-2xl border border-slate-200">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">👤</span>
+                    <span id="display-player-name" class="font-fun font-bold text-blue-700 text-sm sm:text-base">Siswa</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-1 font-fun font-bold text-rose-500 text-base sm:text-lg">
+                        <span>❤️</span>
+                        <span id="lives-count">3</span>
+                    </div>
+                    <div class="flex items-center gap-1 font-fun font-bold text-amber-600 text-base sm:text-lg">
+                        <span>⭐ Skor:</span>
+                        <span id="score-display">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <div class="flex justify-between text-xs sm:text-sm font-bold text-slate-600 mb-1">
+                    <span id="question-number-text">Soal 1 dari 25</span>
+                    <span id="progress-percent-text">4%</span>
+                </div>
+                <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden p-0.5 border border-slate-300">
+                    <div id="progress-bar-fill" class="bg-gradient-to-r from-blue-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 4%;"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 mb-6">
+                <h3 id="question-text" class="font-fun text-lg sm:text-2xl font-bold text-slate-800 mb-4 leading-relaxed">
+                    <!-- Question Title inserted dynamically -->
+                </h3>
+
+                <!-- Dynamic Item Visual Container -->
+                <div id="question-visual" class="my-4 flex flex-wrap justify-center items-center gap-3">
+                    <!-- Dynamic group or emojis inserted here -->
+                </div>
+            </div>
+
+            <!-- Options Grid -->
+            <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
+                <!-- 4 Options rendered dynamically -->
+            </div>
+
+            <!-- Dynamic Answer Feedback Box (Initially hidden) -->
+            <div id="feedback-modal" class="hidden p-4 sm:p-6 rounded-2xl mb-6 text-left animate-pop">
+                <div id="feedback-title" class="font-fun text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2"></div>
+                <div id="feedback-body" class="text-slate-700 text-sm sm:text-base leading-relaxed"></div>
+                <div class="mt-4 text-right">
+                    <button id="next-btn" onclick="nextQuestion()" class="btn-bounce bg-blue-600 hover:bg-blue-700 text-white font-fun font-bold text-lg px-6 py-3 rounded-xl shadow-md border-b-4 border-blue-800">
+                        Lanjut Soal Berikutnya ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 5: RESULTS SCREEN -->
+        <section id="screen-results" class="w-full glass-card rounded-3xl p-6 sm:p-10 text-center hidden animate-pop">
+            <div id="result-icon" class="text-6xl sm:text-8xl mb-3 animate-bounce">🎉</div>
+            <h2 class="font-fun text-3xl sm:text-5xl font-extrabold text-blue-700 mb-1">SELAMAT!</h2>
+            <p class="font-fun text-lg sm:text-2xl text-amber-600 font-bold mb-6">"Petualangan Seperempat Selesai!"</p>
+
+            <div class="bg-white/90 border-2 border-slate-200 rounded-2xl p-6 mb-6 text-left shadow-inner max-w-md mx-auto space-y-3">
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-slate-500 font-bold">Nama Siswa:</span>
+                    <span id="res-name" class="font-bold text-slate-800">-</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-slate-500 font-bold">Sekolah:</span>
+                    <span id="res-school" class="font-bold text-slate-800">-</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-slate-500 font-bold">Nilai Akhir:</span>
+                    <span id="res-score" class="font-fun text-3xl font-extrabold text-emerald-600">0</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-slate-500 font-bold">Jawaban Benar:</span>
+                    <span id="res-correct" class="font-bold text-emerald-600">0 dari 25</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-slate-500 font-bold">Jawaban Salah:</span>
+                    <span id="res-wrong" class="font-bold text-rose-500">0 dari 25</span>
+                </div>
+                <div class="pt-2 text-center">
+                    <div id="res-badge" class="inline-block font-fun text-xl sm:text-2xl font-bold px-6 py-2 rounded-full bg-amber-100 text-amber-800 border-2 border-amber-300">
+                        -
+                    </div>
+                </div>
+            </div>
+
+            <p id="res-motivation" class="font-fun text-base sm:text-lg text-slate-700 mb-8 italic">
+                "Hebat sekali! Kamu sudah berusaha dengan sangat baik!"
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="showCertificateScreen()" class="btn-bounce bg-amber-500 hover:bg-amber-600 text-white font-fun font-bold text-lg sm:text-xl py-4 px-8 rounded-2xl shadow-lg border-b-4 border-amber-700">
+                    🏆 AMBIL SERTIFIKAT
+                </button>
+                <button onclick="restartQuiz()" class="btn-bounce bg-blue-500 hover:bg-blue-600 text-white font-fun font-bold text-lg sm:text-xl py-4 px-8 rounded-2xl shadow-lg border-b-4 border-blue-700">
+                    🔄 MAIN LAGI
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 6: CERTIFICATE SCREEN -->
+        <section id="screen-certificate" class="w-full hidden animate-pop">
+            <!-- Printable Certificate Container -->
+            <div id="certificate-print-area" class="bg-white border-8 border-amber-400 p-6 sm:p-10 rounded-3xl shadow-2xl text-center relative overflow-hidden my-4 max-w-2xl mx-auto">
+                <!-- Corner Ornaments -->
+                <div class="absolute top-2 left-2 text-3xl">🌟</div>
+                <div class="absolute top-2 right-2 text-3xl">🌟</div>
+                <div class="absolute bottom-2 left-2 text-3xl">🌟</div>
+                <div class="absolute bottom-2 right-2 text-3xl">🌟</div>
+
+                <div class="text-5xl sm:text-6xl mb-2">🏆</div>
+                <h1 class="font-fun text-2xl sm:text-4xl font-extrabold text-amber-600 tracking-wider uppercase mb-1">
+                    SERTIFIKAT PENGHARGAAN
+                </h1>
+                <p class="text-slate-500 font-bold text-sm sm:text-base mb-6">Diberikan kepada:</p>
+
+                <h2 id="cert-name" class="font-fun text-2xl sm:text-4xl font-bold text-blue-700 underline decoration-amber-400 decoration-wavy mb-2">
+                    [NAMA SISWA]
+                </h2>
+
+                <p id="cert-school" class="text-slate-600 font-bold text-base sm:text-lg mb-6">
+                    [Nama Sekolah]
+                </p>
+
+                <p class="text-slate-700 text-sm sm:text-base leading-relaxed mb-4">
+                    karena telah berhasil menyelesaikan permainan evaluasi matematika
+                </p>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 my-4 max-w-md mx-auto">
+                    <h3 class="font-fun font-bold text-amber-800 text-lg sm:text-xl">"PETUALANGAN SEPEREMPAT"</h3>
+                    <p class="text-xs sm:text-sm text-slate-600">Evaluasi Matematika Kelas 2 SD — Materi: Seperempat dari Kumpulan Benda</p>
+                </div>
+
+                <div class="flex justify-center items-center gap-6 my-6">
+                    <div class="bg-blue-50 border-2 border-blue-200 px-6 py-2 rounded-2xl">
+                        <span class="block text-xs text-slate-500 font-bold">NILAI AKHIR</span>
+                        <span id="cert-score" class="font-fun text-3xl font-black text-blue-600">100</span>
+                    </div>
+                    <div class="bg-emerald-50 border-2 border-emerald-200 px-6 py-2 rounded-2xl">
+                        <span class="block text-xs text-slate-500 font-bold">PREDIKAT</span>
+                        <span id="cert-predicate" class="font-fun text-xl font-bold text-emerald-600">Sangat Hebat!</span>
+                    </div>
+                </div>
+
+                <p class="font-fun font-bold text-lg text-amber-600 mb-6">🌟 "Aku Bisa Matematika!" 🌟</p>
+
+                <div class="flex justify-between items-end text-xs text-slate-500 pt-4 border-t border-slate-200">
+                    <div class="text-left">
+                        <p>Tanggal: <span id="cert-date">--/--/----</span></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold">Pengembang:</p>
+                        <p>Giga Innovation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons for Certificate (Hidden during printing) -->
+            <div class="no-print flex flex-col sm:flex-row justify-center gap-4 mt-6 text-center">
+                <button onclick="window.print()" class="btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white font-fun font-bold text-lg sm:text-xl py-3 px-8 rounded-2xl shadow-lg border-b-4 border-emerald-800">
+                    🖨️ CETAK SERTIFIKAT
+                </button>
+                <button onclick="switchScreen('screen-results')" class="btn-bounce bg-slate-600 hover:bg-slate-700 text-white font-fun font-bold text-lg sm:text-xl py-3 px-8 rounded-2xl shadow-lg border-b-4 border-slate-800">
+                    ⬅️ KEMBALI KE HASIL
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Branding -->
+    <footer class="w-full text-center py-3 text-xs sm:text-sm text-slate-600 font-medium">
+        © Giga Innovation 081329200985
+    </footer>
+
+    <script>
+        /* -------------------------------------------------------------
+           GAME DATA & DATABASE (25 SOAL SEPEREMPAT KELAS 2 SD)
+        ------------------------------------------------------------- */
+        const quizDatabase = [
+            {
+                id: 1,
+                question: "Ada 8 buah apel 🍎. Seperempat (1/4) dari 8 apel adalah ...",
+                emoji: "🍎",
+                count: 8,
+                options: ["1", "2", "3", "4"],
+                answer: "2",
+                explanation: "Seperempat artinya 1 dari 4 bagian yang sama. 8 apel dibagi menjadi 4 kelompok sama banyak (8 ÷ 4 = 2). Jadi, seperempat dari 8 apel adalah 2."
+            },
+            {
+                id: 2,
+                question: "Ada 12 permen 🍬. Jika diambil seperempatnya, berapa permen yang diambil?",
+                emoji: "🍬",
+                count: 12,
+                options: ["2", "3", "4", "6"],
+                answer: "3",
+                explanation: "12 permen dibagi menjadi 4 kelompok sama banyak (12 ÷ 4 = 3). Maka, seperempat dari 12 permen adalah 3."
+            },
+            {
+                id: 3,
+                question: "Perhatikan 16 bola ⚽. Seperempat dari seluruh bola adalah ...",
+                emoji: "⚽",
+                count: 16,
+                options: ["2", "4", "6", "8"],
+                answer: "4",
+                explanation: "16 bola dibagi menjadi 4 bagian sama besar (16 ÷ 4 = 4). Jadi, seperempat dari 16 bola adalah 4."
+            },
+            {
+                id: 4,
+                question: "Di atas meja ada 4 bintang kuning ⭐. Seperempat dari kumpulan bintang tersebut adalah ...",
+                emoji: "⭐",
+                count: 4,
+                options: ["1", "2", "3", "4"],
+                answer: "1",
+                explanation: "4 bintang dibagi menjadi 4 bagian sama banyak (4 ÷ 4 = 1). Jadi, seperempat dari 4 bintang adalah 1."
+            },
+            {
+                id: 5,
+                question: "Ibu mempunyai 20 kue 🧁. Kue tersebut dibagikan menjadi 4 bagian sama banyak. Satu bagian diberikan kepada Rani. Berapa kue yang diterima Rani?",
+                emoji: "🧁",
+                count: 20,
+                options: ["4", "5", "6", "10"],
+                answer: "5",
+                explanation: "Satu bagian dari 4 bagian sama banyak disebut seperempat (1/4). 20 ÷ 4 = 5. Rani menerima 5 kue."
+            },
+            {
+                id: 6,
+                question: "Budi memiliki 24 buku cerita 📚. Seperempat dari buku cerita Budi disumbangkan ke perpustakaan. Berapa buku yang disumbangkan Budi?",
+                emoji: "📚",
+                count: 24,
+                options: ["4", "5", "6", "8"],
+                answer: "6",
+                explanation: "Seperempat dari 24 buku adalah 24 ÷ 4 = 6. Budi menyumbangkan 6 buku."
+            },
+            {
+                id: 7,
+                question: "Apa arti dari pecahan seperempat (1/4)?",
+                emoji: "🧩",
+                count: 0,
+                options: [
+                    "1 dari 2 bagian yang sama",
+                    "1 dari 3 bagian yang sama",
+                    "1 dari 4 bagian yang sama",
+                    "1 dari 5 bagian yang sama"
+                ],
+                answer: "1 dari 4 bagian yang sama",
+                explanation: "Seperempat (1/4) artinya 1 bagian dari 4 bagian yang sama besar atau sama banyak."
+            },
+            {
+                id: 8,
+                question: "Di sebuah akuarium terdapat 12 ekor ikan 🐟. Seperempat dari ikan tersebut berwarna merah. Berapa jumlah ikan yang berwarna merah?",
+                emoji: "🐟",
+                count: 12,
+                options: ["2", "3", "4", "5"],
+                answer: "3",
+                explanation: "12 ikan dibagi menjadi 4 bagian (12 ÷ 4 = 3). Jadi, ada 3 ekor ikan berwarna merah."
+            },
+            {
+                id: 9,
+                question: "Siti mempunyai 16 pensil warna ✏️. Seperempat bagian dipinjamkan kepada Edo. Berapa pensil warna yang dipinjam Edo?",
+                emoji: "✏️",
+                count: 16,
+                options: ["2", "3", "4", "8"],
+                answer: "4",
+                explanation: "Seperempat dari 16 pensil = 16 ÷ 4 = 4 pensil."
+            },
+            {
+                id: 10,
+                question: "Paman membawa 28 kuntum bunga 🌸. Seperempat dari bunga itu dimasukkan ke dalam vas. Berapa bunga dalam vas?",
+                emoji: "🌸",
+                count: 28,
+                options: ["6", "7", "8", "9"],
+                answer: "7",
+                explanation: "28 bunga dibagi menjadi 4 bagian sama banyak (28 ÷ 4 = 7). Jadi, ada 7 kuntum bunga dalam vas."
+            },
+            {
+                id: 11,
+                question: "Jika seperempat (1/4) dari sekelompok permen adalah 2 permen. Berapa jumlah SELURUH permen?",
+                emoji: "🍬",
+                count: 0,
+                options: ["4", "6", "8", "10"],
+                answer: "8",
+                explanation: "Jika 1/4 = 2, maka seluruhnya ada 4 bagian = 4 × 2 = 8 permen."
+            },
+            {
+                id: 12,
+                question: "Seperempat dari kumpulan bola adalah 4 bola ⚽. Berapa total seluruh bola dalam kumpulan tersebut?",
+                emoji: "⚽",
+                count: 0,
+                options: ["8", "12", "16", "20"],
+                answer: "16",
+                explanation: "Seperempat = 4 bola. Maka seluruh bola = 4 × 4 = 16 bola."
+            },
+            {
+                id: 13,
+                question: "Perhatikan 20 gelas 🥛. Seperempat dari 20 gelas tersebut terisi jus jeruk. Berapa gelas yang berisi jus jeruk?",
+                emoji: "🥛",
+                count: 20,
+                options: ["4", "5", "8", "10"],
+                answer: "5",
+                explanation: "20 ÷ 4 = 5. Jadi ada 5 gelas yang terisi jus jeruk."
+            },
+            {
+                id: 14,
+                question: "Manakah penulisan lambang pecahan SEPEREMPAT yang benar?",
+                emoji: "🔢",
+                count: 0,
+                options: ["1/2", "1/3", "1/4", "1/5"],
+                answer: "1/4",
+                explanation: "Pecahan seperempat dituliskan dengan angka 1/4 (satu per empat)."
+            },
+            {
+                id: 15,
+                question: "Mana yang LEBIH BANYAK dari 12 buah jeruk 🍊: Setengah (1/2) atau Seperempat (1/4)?",
+                emoji: "🍊",
+                count: 12,
+                options: [
+                    "Setengah (1/2)",
+                    "Seperempat (1/4)",
+                    "Keduanya sama banyak",
+                    "Tidak bisa dihitung"
+                ],
+                answer: "Setengah (1/2)",
+                explanation: "Setengah dari 12 adalah 6 (12 ÷ 2 = 6). Seperempat dari 12 adalah 3 (12 ÷ 4 = 3). Maka Setengah (6) lebih banyak daripada Seperempat (3)."
+            },
+            {
+                id: 16,
+                question: "Di lapangan ada 24 mainan mobil 🚗. Seperempat dari mainan tersebut berwarna merah. Berapa jumlah mobil merah?",
+                emoji: "🚗",
+                count: 24,
+                options: ["4", "6", "8", "12"],
+                answer: "6",
+                explanation: "24 mobil ÷ 4 = 6 mobil berwarna merah."
+            },
+            {
+                id: 17,
+                question: "Ada 32 boneka beruang 🧸. Seperempat dari 32 boneka adalah ...",
+                emoji: "🧸",
+                count: 32,
+                options: ["6", "7", "8", "9"],
+                answer: "8",
+                explanation: "32 ÷ 4 = 8. Jadi seperempat dari 32 boneka beruang adalah 8."
+            },
+            {
+                id: 18,
+                question: "Ayah membeli 8 potong pizza 🍕. Tono memakan seperempat dari seluruh potong pizza. Berapa potong pizza yang dimakan Tono?",
+                emoji: "🍕",
+                count: 8,
+                options: ["1", "2", "3", "4"],
+                answer: "2",
+                explanation: "8 potong pizza ÷ 4 = 2 potong pizza yang dimakan Tono."
+            },
+            {
+                id: 19,
+                question: "Di atas meja terdapat 16 piring 🍽️. Seperempat piring sudah dicuci bersih. Berapa piring yang sudah dicuci?",
+                emoji: "🍽️",
+                count: 16,
+                options: ["2", "3", "4", "6"],
+                answer: "4",
+                explanation: "16 ÷ 4 = 4 piring."
+            },
+            {
+                id: 20,
+                question: "Maya mengumpulkan 12 kerang 🐚 di pantai. Seperempat kerangnya berwarna putih. Berapa kerang putih Maya?",
+                emoji: "🐚",
+                count: 12,
+                options: ["2", "3", "4", "6"],
+                answer: "3",
+                explanation: "12 ÷ 4 = 3 kerang berwarna putih."
+            },
+            {
+                id: 21,
+                question: "Jika 1/2 dari 8 apel adalah 4 apel. Berapakah 1/4 (seperempat) dari 8 apel?",
+                emoji: "🍎",
+                count: 8,
+                options: ["1", "2", "3", "4"],
+                answer: "2",
+                explanation: "1/4 dari 8 apel = 8 ÷ 4 = 2 apel."
+            },
+            {
+                id: 22,
+                question: "Di dalam kelas ada 20 anak 👦. Seperempat dari anak-anak memakai kacamata. Berapa anak yang memakai kacamata?",
+                emoji: "👦",
+                count: 20,
+                options: ["4", "5", "6", "10"],
+                answer: "5",
+                explanation: "20 anak ÷ 4 = 5 anak yang memakai kacamata."
+            },
+            {
+                id: 23,
+                question: "Ibu membagi 24 donat 🍩 ke dalam 4 kotak sama banyak. Isi 1 kotak adalah seperempat dari seluruh donat. Berapa isi donat dalam 1 kotak?",
+                emoji: "🍩",
+                count: 24,
+                options: ["4", "5", "6", "8"],
+                answer: "6",
+                explanation: "24 ÷ 4 = 6 donat dalam setiap kotak."
+            },
+            {
+                id: 24,
+                question: "Di dalam kolam ada 16 bebek 🦆. Seperempat dari bebek sedang berenang. Berapa bebek yang berenang?",
+                emoji: "🦆",
+                count: 16,
+                options: ["2", "4", "6", "8"],
+                answer: "4",
+                explanation: "16 ÷ 4 = 4 bebek yang sedang berenang."
+            },
+            {
+                id: 25,
+                question: "Terdapat 4 balon 🎈 di ruang tamu. Seperempat dari balon itu meletus. Berapa balon yang meletus?",
+                emoji: "🎈",
+                count: 4,
+                options: ["1", "2", "3", "4"],
+                answer: "1",
+                explanation: "4 ÷ 4 = 1. Jadi ada 1 balon yang meletus."
+            }
+        ];
+
+        /* -------------------------------------------------------------
+           GAME STATE VARIABLES
+        ------------------------------------------------------------- */
+        let playerName = "";
+        let playerSchool = "";
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let lives = 3;
+        let correctAnswersCount = 0;
+        let wrongAnswersCount = 0;
+        let isSoundOn = true;
+        let speechSynthesizer = window.speechSynthesis;
+
+        /* -------------------------------------------------------------
+           AUDIO SYNTHESIS & VOICE FEEDBACK
+        ------------------------------------------------------------- */
+        function toggleSound() {
+            isSoundOn = !isSoundOn;
+            const icon = document.getElementById('sound-icon');
+            const text = document.getElementById('sound-text');
+            if (isSoundOn) {
+                icon.textContent = '🔊';
+                text.textContent = 'Suara ON';
+                speakText("Suara diaktifkan");
+            } else {
+                icon.textContent = '🔇';
+                text.textContent = 'Suara OFF';
+                if (speechSynthesizer) speechSynthesizer.cancel();
+            }
+        }
+
+        function speakText(text) {
+            if (!isSoundOn || !('speechSynthesis' in window)) return;
+            try {
+                speechSynthesizer.cancel(); // Stop any previous speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID'; // Indonesian voice
+                utterance.rate = 0.95; // Slightly slower for primary kids
+                speechSynthesizer.speak(utterance);
+            } catch (e) {
+                console.log("Speech synthesis error", e);
+            }
+        }
+
+        function playBeep(type) {
+            if (!isSoundOn) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    // Upbeat pleasant chime
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3); // A5
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    // Gentle low buzz
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                    osc.frequency.exponentialRampToValueAtTime(130.81, ctx.currentTime + 0.3); // C3
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {
+                console.log("Audio synth error", e);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           NAVIGATION & SCREEN CONTROLLER
+        ------------------------------------------------------------- */
+        function switchScreen(screenId) {
+            const screens = ['screen-welcome', 'screen-player', 'screen-instructions', 'screen-quiz', 'screen-results', 'screen-certificate'];
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id === screenId) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                    }
+                }
+            });
+
+            if (screenId === 'screen-welcome') {
+                speakText("Halo! Selamat datang di Petualangan Seperempat. Yuk, kita bermain matematika!");
+            }
+        }
+
+        /* -------------------------------------------------------------
+           PLAYER REGISTRATION & GAME START
+        ------------------------------------------------------------- */
+        function handleStartGame(event) {
+            event.preventDefault();
+            playerName = document.getElementById('player-name').value.trim();
+            playerSchool = document.getElementById('player-school').value.trim();
+
+            if (!playerName || !playerSchool) return;
+
+            document.getElementById('display-player-name').textContent = playerName;
+            switchScreen('screen-instructions');
+            speakText(`Halo ${playerName}! Mari baca petunjuk permainan terlebih dahulu.`);
+        }
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            lives = 3;
+            correctAnswersCount = 0;
+            wrongAnswersCount = 0;
+            
+            updateHeaderStatus();
+            switchScreen('screen-quiz');
+            loadQuestion();
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+
+        /* -------------------------------------------------------------
+           QUIZ LOGIC & DISPLAY
+        ------------------------------------------------------------- */
+        function updateHeaderStatus() {
+            document.getElementById('score-display').textContent = score;
+            document.getElementById('lives-count').textContent = lives;
+            
+            const total = quizDatabase.length;
+            const currentNum = currentQuestionIndex + 1;
+            const percent = Math.round((currentNum / total) * 100);
+
+            document.getElementById('question-number-text').textContent = `Soal ${currentNum} dari ${total}`;
+            document.getElementById('progress-percent-text').textContent = `${percent}%`;
+            document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+        }
+
+        function loadQuestion() {
+            updateHeaderStatus();
+            
+            // Reset Feedback UI
+            const feedbackModal = document.getElementById('feedback-modal');
+            feedbackModal.classList.add('hidden');
+            feedbackModal.className = "hidden p-4 sm:p-6 rounded-2xl mb-6 text-left animate-pop";
+
+            const q = quizDatabase[currentQuestionIndex];
+            
+            // Set Question Text
+            document.getElementById('question-text').textContent = `${currentQuestionIndex + 1}. ${q.question}`;
+
+            // Read question aloud
+            speakText(`Soal nomor ${currentQuestionIndex + 1}. ${q.question}`);
+
+            // Render Item Grid / Visual
+            const visualContainer = document.getElementById('question-visual');
+            visualContainer.innerHTML = '';
+
+            if (q.count > 0) {
+                // Group items into 4 equal visually distinct boxes if divisible by 4
+                const groupSize = q.count / 4;
+                for (let g = 0; g < 4; g++) {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'item-grid-box flex flex-wrap justify-center items-center gap-1 max-w-[140px]';
+                    for (let i = 0; i < groupSize; i++) {
+                        const itemSpan = document.createElement('span');
+                        itemSpan.className = 'text-2xl sm:text-3xl hover:scale-125 transition-transform';
+                        itemSpan.textContent = q.emoji;
+                        groupDiv.appendChild(itemSpan);
+                    }
+                    visualContainer.appendChild(groupDiv);
+                }
+            } else {
+                // Large emoji icon for concept questions
+                const bigEmoji = document.createElement('div');
+                bigEmoji.className = 'text-6xl sm:text-7xl py-2 animate-pulse';
+                bigEmoji.textContent = q.emoji;
+                visualContainer.appendChild(bigEmoji);
+            }
+
+            // Shuffle Options position to ensure variety
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const optionLabels = ['A', 'B', 'C', 'D'];
+            
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-bounce w-full bg-slate-50 hover:bg-blue-50 hover:border-blue-400 border-2 border-slate-200 text-slate-800 font-bold p-4 rounded-2xl text-left flex items-center gap-3 transition shadow-sm text-base sm:text-lg';
+                btn.onclick = () => checkAnswer(optText, q);
+                btn.id = `opt-btn-${idx}`;
+
+                btn.innerHTML = `
+                    <span class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-700 font-fun font-bold rounded-xl text-sm flex-shrink-0">${optionLabels[idx]}</span>
+                    <span>${optText}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        /* -------------------------------------------------------------
+           ANSWER EVALUATION & FEEDBACK
+        ------------------------------------------------------------- */
+        function checkAnswer(selectedOption, questionObj) {
+            // Disable all option buttons after click
+            const optionsContainer = document.getElementById('options-container');
+            const buttons = optionsContainer.getElementsByTagName('button');
+            for (let btn of buttons) {
+                btn.disabled = true;
+                btn.classList.remove('btn-bounce', 'hover:bg-blue-50');
+                btn.classList.add('opacity-80', 'cursor-not-allowed');
+            }
+
+            const feedbackModal = document.getElementById('feedback-modal');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackBody = document.getElementById('feedback-body');
+
+            const isCorrect = (selectedOption === questionObj.answer);
+
+            feedbackModal.classList.remove('hidden');
+
+            if (isCorrect) {
+                score += 4; // 25 questions * 4 = 100 max score
+                correctAnswersCount++;
+                playBeep('correct');
+
+                feedbackModal.classList.add('bg-emerald-50', 'border-2', 'border-emerald-300');
+                feedbackTitle.className = 'font-fun text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2 text-emerald-700';
+                feedbackTitle.innerHTML = `🎉 Hebat! Jawabanmu benar!`;
+                feedbackBody.innerHTML = `
+                    <p class="font-bold text-emerald-800 mb-1">Kamu pintar sekali menemukan seperempat! 🌟</p>
+                    <p class="text-slate-600">${questionObj.explanation}</p>
+                `;
+
+                speakText("Hebat! Jawabanmu benar!");
+            } else {
+                wrongAnswersCount++;
+                if (lives > 0) lives--; // Decrement hearts on mistake
+                playBeep('wrong');
+
+                feedbackModal.classList.add('bg-rose-50', 'border-2', 'border-rose-300');
+                feedbackTitle.className = 'font-fun text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2 text-rose-700';
+                feedbackTitle.innerHTML = `😊 Belum tepat, ayo belajar lagi!`;
+                feedbackBody.innerHTML = `
+                    <p class="font-bold text-rose-800 mb-2">Jawaban yang benar: <span class="text-blue-700 underline">${questionObj.answer}</span></p>
+                    <div class="bg-white p-3 rounded-xl border border-rose-200 text-slate-700">
+                        <span class="font-bold text-slate-800 block mb-1">💡 Pembahasan:</span>
+                        ${questionObj.explanation}
+                    </div>
+                `;
+
+                speakText("Belum tepat. Yuk, coba perhatikan pembahasannya!");
+            }
+
+            // Update Header Score immediately
+            document.getElementById('score-display').textContent = score;
+            document.getElementById('lives-count').textContent = lives;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizDatabase.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        /* -------------------------------------------------------------
+           GAME COMPLETION & RESULTS
+        ------------------------------------------------------------- */
+        function finishQuiz() {
+            switchScreen('screen-results');
+
+            document.getElementById('res-name').textContent = playerName;
+            document.getElementById('res-school').textContent = playerSchool;
+            document.getElementById('res-score').textContent = score;
+            document.getElementById('res-correct').textContent = `${correctAnswersCount} dari 25`;
+            document.getElementById('res-wrong').textContent = `${wrongAnswersCount} dari 25`;
+
+            // Categorize Predicate
+            let badgeText = "";
+            let motivationText = "";
+            let iconEmoji = "🎉";
+
+            if (score >= 90) {
+                badgeText = "🏆 Sangat Hebat!";
+                motivationText = "Luar biasa! Kamu sudah sangat mahir dan paham tentang seperempat!";
+                iconEmoji = "🏆";
+            } else if (score >= 80) {
+                badgeText = "🌟 Hebat!";
+                motivationText = "Hebat! Kamu sudah sangat baik mengenal seperempat dari kumpulan benda!";
+                iconEmoji = "🌟";
+            } else if (score >= 70) {
+                badgeText = "😊 Bagus!";
+                motivationText = "Bagus sekali! Teruskan semangat belajar matematikamu ya!";
+                iconEmoji = "😊";
+            } else if (score >= 60) {
+                badgeText = "💪 Terus Berlatih!";
+                motivationText = "Kamu sudah berusaha dengan baik! Yuk, sering latihan lagi agar makin jago!";
+                iconEmoji = "💪";
+            } else {
+                badgeText = "🌱 Ayo Belajar Lagi!";
+                motivationText = "Jangan menyerah! Yuk, belajar lagi bersama teman dan guru agar semakin pintar!";
+                iconEmoji = "🌱";
+            }
+
+            document.getElementById('result-icon').textContent = iconEmoji;
+            document.getElementById('res-badge').textContent = badgeText;
+            document.getElementById('res-motivation').textContent = motivationText;
+
+            // Trigger Confetti Celebration
+            try {
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                }
+            } catch (e) {
+                console.log("Confetti trigger error", e);
+            }
+
+            speakText(`Selamat ${playerName}! Petualangan seperempat telah selesai. Nilaimu adalah ${score}. ${motivationText}`);
+        }
+
+        /* -------------------------------------------------------------
+           CERTIFICATE GENERATION
+        ------------------------------------------------------------- */
+        function showCertificateScreen() {
+            switchScreen('screen-certificate');
+
+            document.getElementById('cert-name').textContent = playerName;
+            document.getElementById('cert-school').textContent = playerSchool;
+            document.getElementById('cert-score').textContent = score;
+
+            let predicate = "Sangat Hebat!";
+            if (score >= 90) predicate = "Sangat Hebat!";
+            else if (score >= 80) predicate = "Hebat!";
+            else if (score >= 70) predicate = "Bagus!";
+            else if (score >= 60) predicate = "Terus Berlatih!";
+            else predicate = "Ayo Belajar Lagi!";
+
+            document.getElementById('cert-predicate').textContent = predicate;
+
+            // Auto Today's Date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            document.getElementById('cert-date').textContent = dateStr;
+
+            speakText("Sertifikat penghargaanmu sudah siap. Kamu bisa mencetaknya sekarang!");
+        }
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            switchScreen('screen-welcome');
+        };
+    </script>
+</body>
+</html>
